@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipe
 
 tokenizer = AutoTokenizer.from_pretrained("papluca/xlm-roberta-base-language-detection")
 model = AutoModelForSequenceClassification.from_pretrained("papluca/xlm-roberta-base-language-detection")
-classifier = pipeline("language-detector", model=model, tokenizer=tokenizer)
+classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
 api_key = os.getenv("CLIENT")
 
 
@@ -23,4 +23,10 @@ def language_detection(request):
         message= request.args.get('message')
     elif request_json and 'message' in request_json:
         message= request_json['message']
-    return classifier(message)[0]
+    
+    classification = classifier(message)[0]
+    label = classification["label"]
+    score = classification["score"]
+    if score <= 0.8:
+        label = "en"
+    return label
