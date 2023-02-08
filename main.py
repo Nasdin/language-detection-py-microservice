@@ -9,11 +9,11 @@ def language_detection(request):
   request_json = request.get_json()
 
   if request.args and 'key' in request.args:
-      key= request.args.get('key')
+      key = request.args.get('key')
   elif request_json and 'message' in request_json:
-      key= request_json['key']
+      key = request_json['key']
   
-  if api_key != api_key:
+  if key != api_key:
     return "{message: 'Not Authorized', code:403}"
 
   if request.args and 'message' in request.args:
