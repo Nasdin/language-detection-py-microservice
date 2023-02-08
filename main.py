@@ -7,22 +7,21 @@ classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
 api_key = os.getenv("CLIENT")
 
 
-
 def language_detection(request):
     request_json = request.get_json()
 
     if request.args and 'key' in request.args:
-        key= request.args.get('key')
+        key = request.args.get('key')
     elif request_json and 'message' in request_json:
-      key= request_json['key']
+        key = request_json['key']
 
     if key != api_key:
         return "{message: 'Not Authorized', code:403}"
 
     if request.args and 'message' in request.args:
-        message= request.args.get('message')
+        message = request.args.get('message')
     elif request_json and 'message' in request_json:
-        message= request_json['message']
+        message = request_json['message']
     
     classification = classifier(message)[0]
     label = classification["label"]
