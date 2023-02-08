@@ -9,7 +9,7 @@ api_key = os.getenv("CLIENT")
 
 app = Flask(__name__)
 
-@app.route("/')
+@app.route("/")
 def language_detection():
     key = request.args.get("key")
     message = request.args.get("message")
