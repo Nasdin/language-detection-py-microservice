@@ -1,10 +1,8 @@
 import os
 from flask import Flask, jsonify, request
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
+from lingua import Language, LanguageDetectorBuilder
 
-tokenizer = AutoTokenizer.from_pretrained("papluca/xlm-roberta-base-language-detection")
-model = AutoModelForSequenceClassification.from_pretrained("papluca/xlm-roberta-base-language-detection")
-classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+detector = LanguageDetectorBuilder.from_all_spoken_languages().with_preloaded_language_models().build()
 api_key = os.getenv("CLIENT")
 
 app = Flask(__name__)
@@ -16,13 +14,12 @@ def language_detection():
            
     if key != api_key:
         return jsonify(code=403, message="Not Authorized")
-    
-    classification = classifier(message)[0]
-    label = classification["label"]
-    score = classification["score"]
-    if score <= 0.8:
-        label = "en"
-    return label
+    detected = detector.detect_language_of(message)
+    if detected is not None:
+        confidence = detector.compute_language_confidence(message, detected)
+        return jsonify(predicted=detected.name, confidence=confidence)
+    else:
+        return jsonify(predicted=Language.ENGLISH.name, confidence=1)
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google Cloud
