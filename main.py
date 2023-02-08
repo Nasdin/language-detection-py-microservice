@@ -1,22 +1,23 @@
 import os
 from flask import Flask, jsonify, request
 from transformers import pipeline
-from sagemaker.huggingface import HuggingFaceModel
+
 
 app = Flask(__name__)
 
 model_path = "./model"
 api_key = os.environ.get("KEY")
 
-
+classify = pipeline(model="papluca/xlm-roberta-base-language-detection")
 
 @app.route('/')
 def classify_review():
     api_key = request.args.get('key')
-    if review is None or api_key != api_key:
+    if api_key != api_key:
         return jsonify(code=403, message="bad request")
-    classify = pipeline("transformer-", model=model_path, tokenizer=model_path)
-    return classify("that was great")[0]
+    if request.args and 'message' in request.args:
+        message = request.args.get('message')
+        return classify(message)[0]
 
 
 if __name__ == '__main__':
