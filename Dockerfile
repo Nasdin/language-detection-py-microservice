@@ -1,5 +1,5 @@
-# Use Python311
-FROM python:3.11
+# Use Python310
+FROM python:3.10
 # Allow statements and log messages to immediately appear in the Knative logs
 ENV PYTHONUNBUFFERED True
 # Copy requirements.txt to the docker image and install packages
