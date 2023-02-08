@@ -2,7 +2,8 @@ import os
 from flask import Flask, jsonify, request
 from lingua import Language, LanguageDetectorBuilder
 
-detector = LanguageDetectorBuilder.from_all_spoken_languages().with_preloaded_language_models().build()
+languages = [Language.ENGLISH, Language.CHINESE, Language.MALAY, Language.JAPANESE, Language.KOREAN, Language.RUSSIAN, Language.THAI, Language.VIETNAMESE, Language.TAGALOG, Language.HINDI]
+detector = LanguageDetectorBuilder.from_languages(*languages).with_preloaded_language_models().build()
 api_key = os.getenv("CLIENT")
 
 app = Flask(__name__)
