@@ -1,5 +1,6 @@
 import os
-from flask import Flask, jsonify, request
+from functools import wraps
+from flask import Flask, jsonify, request, abort
 from lingua import Language, LanguageDetectorBuilder
 
 languages = [Language.ENGLISH, Language.CHINESE, Language.MALAY, Language.JAPANESE, Language.KOREAN, Language.RUSSIAN, Language.THAI, Language.VIETNAMESE, Language.TAGALOG, Language.HINDI]
@@ -8,13 +9,22 @@ api_key = os.getenv("CLIENT")
 
 app = Flask(__name__)
 
+def authorize(f):
+    @wraps(f)
+    def decorated_function(*args, **kws):
+        if not 'key' in request.json:
+           abort(403)
+        else:
+            key = request.json["key"]
+            if key != api_key:
+                abort(403)
+        return f(user, *args, **kws)            
+    return decorated_function
+
 @app.route("/", methods=["POST"])
+@authorize
 def language_detection():
-    key = request.json["key"]
     message = request.json["message"]
-           
-    if key != api_key:
-        return jsonify(code=403, message="Not Authorized")
     detected = detector.detect_language_of(message)
     if detected is not None:
         confidence = detector.compute_language_confidence(message, detected)
@@ -25,6 +35,17 @@ def language_detection():
 @app.route("/", methods=["GET"])
 def language_health_check():
     return jsonify(languages=[language.name for language in languages])
+
+
+@app.route('/multiple', methods = ['POST'])
+@authorize
+def multi_language_detection():
+    message = request.json["message"]
+    return jsonify(
+        results=[
+            {result.language.name: message[result.start_index:result.end_index]}
+        ] for result in detector.detect_multiple_languages_of(message))
+
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google Cloud
