@@ -21,6 +21,10 @@ def language_detection():
         return jsonify(predicted=detected.name, confidence=confidence)
     else:
         return jsonify(predicted=Language.ENGLISH.name, confidence=1)
+    
+@app.route("/", methods=["GET"])
+def language_health_check():
+    return jsonify(languages=[language.name for language in languages])
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google Cloud
