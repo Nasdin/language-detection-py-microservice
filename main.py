@@ -15,13 +15,12 @@ app = Flask(__name__)
 def authorize(f):
     @wraps(f)
     def decorated_function(*args, **kws):
-        if not 'key' in request.json:
+        if 'key' not in request.json:
             abort(403)
-        else:
-            key = request.json["key"]
-            if key != api_key:
-                abort(403)
-        return f(user, *args, **kws)
+        key = request.json["key"]
+        if key != api_key:
+            abort(403)
+        return f(*args, **kws)
 
     return decorated_function
 
