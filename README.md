@@ -1,7 +1,26 @@
-# language_detection_in_gcp
+# Language detection as a microservice
 
+Language detection and multi-language detection microservice.
 
-Simple language detection and multi-language detection microservice, CICD-ed using Google Cloud Build, deployed as a microservice in Cloud Run.
+The accuracy increases the fewer languages you configure this microservice to detect.
+Accuracy ranges from 85% to 100% depending on range of languages to be detected, modifiable in the code.
+
+## Language support in this microservice
+The following languages are supported for detection, with an estimated accuracy of 95%
+
+        ENGLISH
+        CHINESE
+        MALAY
+        JAPANESE
+        KOREAN
+        RUSSIAN
+        THAI
+        VIETNAMESE
+        TAGALOG
+        HINDI
+
+## Deployment
+Personally, I've setup the CICD using Google Cloud Build, and deployed as a microservice in Cloud Run. There are no configurations to be made in the repository if you happen to fork it. Simply click a few buttons on GCP Cloud Run and Cloud Build to import this repository, then add the "CLIENT" environment as your secret key
 
 ## 2 POST endpoints
 
