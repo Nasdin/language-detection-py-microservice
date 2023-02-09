@@ -8,10 +8,10 @@ api_key = os.getenv("CLIENT")
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/", methods=["POST"])
 def language_detection():
-    key = request.args.get("key")
-    message = request.args.get("message")
+    key = request.json["key"]
+    message = request.json["message"]
            
     if key != api_key:
         return jsonify(code=403, message="Not Authorized")
